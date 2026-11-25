@@ -8,7 +8,7 @@ Extensión para Chrome, Edge o Brave con un **editor a pantalla completa**: suel
 
 ## Instalación (modo desarrollador)
 
-1. Abre `chrome://extensions` (en Edge, `edge://extensions`).
+1. Abre `chrome://extensions` en Chrome, `edge://extensions` en Edge y `brave://extensions` en Brave).
 2. Activa **Modo de desarrollador**.
 3. Pulsa **Cargar extensión sin empaquetar** y elige esta carpeta (la que contiene `manifest.json`).
 4. Fija el icono amarillo en la barra del navegador.
