@@ -1,6 +1,6 @@
 <p align="center"><img src="icons/icon-128.png" width="96" alt=""></p>
 
-# Yapper — stickers con sonido para WhatsApp Web
+# Yapper | Stickers con sonido para WhatsApp Web
 
 Extensión para Chrome, Edge o Brave con un **editor a pantalla completa**: sueltas un video o una imagen, recortas el tramo y el **encuadre**, y envías el sticker con sonido a cualquier chat con un clic. Todo se procesa en tu navegador.
 
