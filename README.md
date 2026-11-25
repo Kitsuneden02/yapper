@@ -6,12 +6,25 @@ Extensión para Chrome, Edge o Brave con un **editor a pantalla completa**: suel
 
 > Proyecto no oficial, sin relación con WhatsApp ni Meta. Usa funciones internas de WhatsApp Web que pueden cambiar en cualquier momento y activa, solo en tu navegador, la función de stickers con sonido que WhatsApp está probando.
 
-## Instalación (modo desarrollador)
+<p align="center"><a href="https://github.com/Kitsuneden02/yapper/releases/latest/download/yapper.zip"><b>⬇ Descargar Yapper (.zip)</b></a></p>
 
-1. Abre `chrome://extensions` en Chrome, `edge://extensions` en Edge y `brave://extensions` en Brave).
-2. Activa **Modo de desarrollador**.
-3. Pulsa **Cargar extensión sin empaquetar** y elige esta carpeta (la que contiene `manifest.json`).
-4. Fija el icono amarillo en la barra del navegador.
+## Instalación
+
+Funciona en Chrome, Edge y Brave de escritorio. No funciona en Firefox ni en Safari.
+
+1. Descarga [**yapper.zip**](https://github.com/Kitsuneden02/yapper/releases/latest/download/yapper.zip). También está en la página de [versiones](https://github.com/Kitsuneden02/yapper/releases/latest).
+2. Descomprímelo en un lugar donde se vaya a quedar, por ejemplo `Documentos`. Obtendrás una carpeta `yapper`.
+   **No la borres ni la muevas después:** el navegador carga la extensión desde ahí.
+3. Abre `chrome://extensions` (en Edge, `edge://extensions`; en Brave, `brave://extensions`).
+4. Activa **Modo de desarrollador**, arriba a la derecha.
+5. Pulsa **Cargar extensión sin empaquetar** y elige la carpeta `yapper` del paso 2.
+6. Pulsa el icono del rompecabezas en la barra del navegador y fija **Yapper** con la chincheta.
+
+**Actualizar:** descarga el .zip nuevo, reemplaza el contenido de la carpeta `yapper` y pulsa ↻ en la tarjeta de Yapper, en la página de extensiones. Después recarga la pestaña de WhatsApp Web. Tus stickers y ajustes se conservan.
+
+**Desinstalar:** pulsa **Quitar** en la página de extensiones y borra la carpeta.
+
+**Si al cargarla dice que falta `manifest.json`:** elegiste la carpeta equivocada. Algunos descompresores crean una carpeta dentro de otra; elige la que contiene directamente `manifest.json`.
 
 ## Uso
 
@@ -31,7 +44,7 @@ Extensión para Chrome, Edge o Brave con un **editor a pantalla completa**: suel
 
 ### Sincronía
 
-La conversión no introduce desfase entre la imagen y el audio. En el celular, en cambio, WhatsApp puede arrancar el audio con algo de retraso respecto a la animación. El panel **Sincronía** lo compensa:
+La conversión no introduce desfase entre la imagen y el audio. En el celular, en cambio, WhatsApp puede arrancar el audio con algo de retraso respecto a la animación. La sección **Sincronía** de **Ajustes** (el botón de arriba a la derecha) lo compensa:
 
 - **Positivo:** el primer cuadro dura más, así que la imagen espera al audio.
 - **Negativo:** se añade silencio al inicio del audio, así que el audio espera a la imagen.
@@ -74,6 +87,14 @@ Sirve la carpeta con `python -m http.server 8765` y abre:
 - `http://localhost:8765/dev/test.html` → **Ejecutar**: genera un video sintético, crea varios stickers (centrado, recortado, rotado, volteado, imagen fija) y valida el WebP, el EXIF y el Ogg.
 - `http://localhost:8765/editor/editor.html`: el editor en «modo de prueba». Crea y descarga stickers, pero no envía.
 - `http://localhost:8765/dev/shot.html`: el editor con `dev/demo.webm` ya cargado. Sirve para revisar el diseño; acepta `#create`, `#lib` y `#settings`.
+
+Para publicar una versión:
+
+1. Sube `version` en `manifest.json` y haz commit.
+2. Ejecuta `sh scripts/empaquetar.sh`. Genera `dist/yapper.zip` a partir del último commit.
+3. Crea la release con ese archivo: `gh release create vX.Y.Z dist/yapper.zip`.
+
+El enlace de descarga del README siempre apunta a la última release.
 
 ## Límites
 
