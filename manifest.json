@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "Yapper — stickers con sonido",
+  "short_name": "Yapper",
+  "version": "0.2.0",
+  "description": "Editor de stickers con sonido para WhatsApp Web: recorta en tiempo y encuadre, y envía con un clic. Extensión no oficial.",
+  "minimum_chrome_version": "116",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "permissions": ["scripting", "storage"],
+  "host_permissions": ["https://web.whatsapp.com/*"],
+  "background": { "service_worker": "background.js", "type": "module" },
+  "action": {
+    "default_title": "Abrir el editor de stickers con sonido",
+    "default_icon": { "16": "icons/icon-16.png", "32": "icons/icon-32.png" }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://web.whatsapp.com/*"],
+      "js": ["content/isolated.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["https://web.whatsapp.com/*"],
+      "js": ["content/wa-main.js"],
+      "run_at": "document_idle",
+      "world": "MAIN"
+    }
+  ]
+}

@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Yapper</title>
+  <link rel="icon" href="../icons/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="editor.css">
+</head>
+<body>
+  <!-- Iconos -->
+  <svg xmlns="http://www.w3.org/2000/svg" hidden>
+    <symbol id="i-rotl" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></symbol>
+    <symbol id="i-rotr" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></symbol>
+    <symbol id="i-fliph" viewBox="0 0 24 24"><path d="m3 7 5 5-5 5V7"/><path d="m21 7-5 5 5 5V7"/><path d="M12 20v2M12 14v2M12 8v2M12 2v2"/></symbol>
+    <symbol id="i-flipv" viewBox="0 0 24 24"><path d="m7 3 5 5 5-5H7"/><path d="m7 21 5-5 5 5H7"/><path d="M20 12h2M14 12h2M8 12h2M2 12h2"/></symbol>
+    <symbol id="i-fit" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></symbol>
+    <symbol id="i-full" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z" fill="currentColor"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" stroke-width="3.2"/></symbol>
+    <symbol id="i-prev" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 15V3M7 8l5-5 5 5M5 21h14"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+  </svg>
+
+  <header class="topbar">
+    <div class="brand"><img src="../icons/icon.svg" alt=""><span>Yapper</span></div>
+    <div class="top-actions">
+      <button id="waStatus" class="status" title="Conexión con WhatsApp Web"><span class="dot"></span><span id="waStatusText">Buscando WhatsApp Web…</span></button>
+      <button id="btnNewFile" class="btn ghost" hidden><svg class="ic"><use href="#i-folder"/></svg>Abrir</button>
+      <button id="btnSettings" class="btn ghost icon-only" title="Ajustes"><svg class="ic"><use href="#i-settings"/></svg></button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="workspace">
+      <label id="drop" class="drop">
+        <input id="fileInput" type="file" accept="video/*,image/*" hidden>
+        <div class="drop-inner">
+          <div class="drop-icon"><svg class="ic"><use href="#i-upload"/></svg></div>
+          <h2>Suelta un video o una imagen</h2>
+          <p>o haz clic para elegir · Ctrl+V para pegar</p>
+        </div>
+      </label>
+
+      <div id="editor" class="editor" hidden>
+        <div id="stageWrap" class="stage-wrap">
+          <div id="stageBox" class="stage-box">
+            <canvas id="stage"></canvas>
+            <div id="cropRect" class="crop-rect">
+              <div class="grid"></div>
+              <span class="h nw" data-h="nw"></span><span class="h ne" data-h="ne"></span>
+              <span class="h sw" data-h="sw"></span><span class="h se" data-h="se"></span>
+              <span class="h n" data-h="n"></span><span class="h s" data-h="s"></span>
+              <span class="h w" data-h="w"></span><span class="h e" data-h="e"></span>
+            </div>
+          </div>
+        </div>
+
+        <div id="transport" class="transport">
+          <div class="transport-row">
+            <button id="btnPlay" class="btn round" title="Reproducir tramo (Espacio)"><svg class="ic"><use href="#i-play"/></svg></button>
+            <div id="timeline" class="timeline">
+              <div class="track"></div>
+              <div id="tlRange" class="tl-range"></div>
+              <div id="tlStart" class="tl-handle" title="Inicio (I)"></div>
+              <div id="tlEnd" class="tl-handle" title="Fin (O)"></div>
+              <div id="tlHead" class="tl-head"></div>
+            </div>
+          </div>
+          <div class="transport-row small">
+            <span id="timeNow" class="mono">0:00.00</span>
+            <div class="btn-group">
+              <button id="btnPrev" class="btn ghost icon-only" title="Cuadro anterior (←)"><svg class="ic"><use href="#i-prev"/></svg></button>
+              <button id="btnNext" class="btn ghost icon-only" title="Cuadro siguiente (→)"><svg class="ic"><use href="#i-next"/></svg></button>
+            </div>
+            <button id="btnIn" class="btn ghost" title="Marcar inicio aquí (I)">Marcar inicio</button>
+            <button id="btnOut" class="btn ghost" title="Marcar fin aquí (O)">Marcar fin</button>
+            <span id="segInfo" class="mono muted push"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="sidebar">
+      <nav class="tabs" role="tablist">
+        <button class="tab on" data-tab="edit">Editar</button>
+        <button class="tab" data-tab="lib">Biblioteca <span id="libCount" class="count"></span></button>
+      </nav>
+
+      <div id="tabEdit" class="tab-body">
+        <p id="noFile" class="empty">Abre un video o una imagen para empezar a editar.</p>
+        <div id="panels" hidden>
+          <section class="group">
+            <div class="group-head">
+              <h3>Encuadre</h3>
+              <div class="seg">
+                <button data-mode="square" class="on">Cuadrado</button>
+                <button data-mode="free" title="Cualquier proporción; lo que sobra queda transparente">Libre</button>
+              </div>
+            </div>
+            <div class="framing">
+              <canvas id="preview" class="checker" width="256" height="256" title="Vista previa del sticker"></canvas>
+              <div class="framing-side">
+                <div class="toolbar">
+                  <button id="btnRotL" class="btn ghost icon-only" title="Rotar a la izquierda"><svg class="ic"><use href="#i-rotl"/></svg></button>
+                  <button id="btnRotR" class="btn ghost icon-only" title="Rotar a la derecha"><svg class="ic"><use href="#i-rotr"/></svg></button>
+                  <button id="btnFlipH" class="btn ghost icon-only" title="Voltear horizontal"><svg class="ic"><use href="#i-fliph"/></svg></button>
+                  <button id="btnFlipV" class="btn ghost icon-only" title="Voltear vertical"><svg class="ic"><use href="#i-flipv"/></svg></button>
+                  <button id="btnFit" class="btn ghost icon-only" title="Ajustar al máximo"><svg class="ic"><use href="#i-fit"/></svg></button>
+                  <button id="btnFull" class="btn ghost icon-only" title="Cuadro completo (bordes transparentes)"><svg class="ic"><use href="#i-full"/></svg></button>
+                </div>
+                <div id="cropInfo" class="mono muted"></div>
+                <p class="hint">Arrastra el recuadro o sus esquinas. Rueda del ratón para acercar.</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="group">
+            <div class="group-head">
+              <h3>Audio</h3>
+              <div class="seg" id="audioSeg">
+                <button data-audio="video" class="on">Del video</button>
+                <button data-audio="file">Otro archivo</button>
+              </div>
+            </div>
+            <div id="audioFileBox" hidden>
+              <label class="file-pick"><input id="audioInput" type="file" accept="audio/*,video/*" hidden><svg class="ic"><use href="#i-music"/></svg><span id="audioName">Elegir audio…</span></label>
+              <div class="grid2">
+                <label class="field">Desde (s)<input id="audioStart" type="number" min="0" step="0.05" value="0"></label>
+                <label class="field" id="audioEndField">Hasta (s)<input id="audioEnd" type="number" min="0" step="0.05" value="0"></label>
+              </div>
+              <div id="audioLen" class="muted small"></div>
+            </div>
+            <label class="field">
+              <span class="field-row">Volumen <span id="gainVal" class="mono">100 %</span></span>
+              <input id="gain" type="range" min="0" max="300" value="100">
+            </label>
+          </section>
+
+          <section class="group">
+            <div class="group-head"><h3>Salida</h3></div>
+            <div class="grid2">
+              <label class="field">Resolución
+                <select id="size"><option value="512">512 px</option><option value="448">448 px</option><option value="384">384 px</option><option value="320">320 px</option><option value="256">256 px</option></select>
+              </label>
+              <label class="field">Fluidez
+                <select id="fps"><option value="10">10 fps</option><option value="12">12 fps</option><option value="15" selected>15 fps</option><option value="20">20 fps</option><option value="24">24 fps</option><option value="30">30 fps</option></select>
+              </label>
+            </div>
+            <div class="meter"><div id="meterBar"></div></div>
+            <div id="estimate" class="muted small">Calculando peso…</div>
+          </section>
+        </div>
+      </div>
+
+      <div id="tabLib" class="tab-body" hidden>
+        <div id="libGrid" class="lib-grid"></div>
+        <p id="libEmpty" class="empty">Los stickers que crees aparecen aquí para escucharlos y reenviarlos con un clic.</p>
+      </div>
+
+      <footer class="actionbar">
+        <div id="result" class="result" hidden>
+          <img id="resultImg" class="checker" alt="Sticker creado" title="Clic para escucharlo">
+          <div class="result-body">
+            <div id="resultInfo" class="mono small muted"></div>
+            <div class="result-actions">
+              <button id="btnResultSend" class="btn small"><svg class="ic"><use href="#i-send"/></svg>Enviar</button>
+              <button id="btnResultDl" class="btn ghost small"><svg class="ic"><use href="#i-download"/></svg>Descargar</button>
+            </div>
+          </div>
+        </div>
+        <div id="progress" class="progress" hidden><div id="progressBar"></div><span id="progressText"></span></div>
+        <div class="dest">
+          <select id="dest" title="Destino"><option value="self">Mi chat (a mí mismo)</option><option value="active">Chat abierto en WhatsApp</option></select>
+          <button id="btnChats" class="btn ghost icon-only" title="Actualizar lista de chats"><svg class="ic"><use href="#i-refresh"/></svg></button>
+        </div>
+        <div class="cta">
+          <button id="btnCreateSend" class="btn primary" disabled><svg class="ic"><use href="#i-send"/></svg>Crear y enviar</button>
+          <button id="btnCreate" class="btn" disabled>Solo crear</button>
+        </div>
+      </footer>
+    </aside>
+  </main>
+
+  <dialog id="settings" class="dialog">
+    <div class="dialog-head">
+      <h2>Ajustes</h2>
+      <button id="btnSettingsClose" class="btn ghost icon-only" title="Cerrar"><svg class="ic"><use href="#i-close"/></svg></button>
+    </div>
+
+    <section class="group">
+      <h3>Datos del sticker</h3>
+      <div class="grid2">
+        <label class="field">Paquete<input id="pack" type="text" maxlength="60" placeholder="Opcional"></label>
+        <label class="field">Autor<input id="author" type="text" maxlength="60" placeholder="Opcional"></label>
+      </div>
+      <label class="field">Emoji<input id="emoji" type="text" maxlength="8" value="🔊"></label>
+      <label class="check"><input id="openForward" type="checkbox"> Abrir «Reenviar» después de enviar</label>
+    </section>
+
+    <section class="group">
+      <h3>Sincronía</h3>
+      <label class="field">
+        <span class="field-row">Compensar desfase <span class="mono" id="syncVal">0 ms</span></span>
+        <input id="sync" type="range" min="-1000" max="1000" step="10" value="0">
+      </label>
+      <p class="hint">Positivo: la imagen espera al audio (el sonido llegaba tarde). Negativo: el audio espera a la imagen.</p>
+      <details class="calib">
+        <summary>Calibrar con un sticker de prueba</summary>
+        <ol>
+          <li>Envía el sticker de calibración (usa la compensación actual).</li>
+          <li>Ábrelo en tu celular y, al oír el pitido, mira el número.</li>
+          <li>Escríbelo y pulsa Aplicar. Repite hasta ver 0.</li>
+        </ol>
+        <button id="btnCalib" class="btn">Crear sticker de calibración</button>
+        <div class="inline">
+          <label class="field">Número que viste<input id="calibSeen" type="number" step="50" placeholder="p. ej. 150 o −100"></label>
+          <button id="btnCalibApply" class="btn">Aplicar</button>
+        </div>
+      </details>
+    </section>
+  </dialog>
+
+  <div id="toast" class="toast" hidden></div>
+  <audio id="sfx" hidden></audio>
+  <script type="module" src="editor.js"></script>
+</body>
+</html>
